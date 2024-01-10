@@ -11,6 +11,7 @@ const User = require("../models/usersModel");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
+  console.log(username, email, password);
 
   if (!username || !email || !password) {
     res.status(400);
@@ -84,13 +85,7 @@ const generateToken = (id) => {
   });
 };
 
-// TESTAS
-const testas = asyncHandler(async (req, res) => {
-  console.log(req.body.routines);
-});
-
 module.exports = {
   registerUser,
   loginUser,
-  testas,
 };
