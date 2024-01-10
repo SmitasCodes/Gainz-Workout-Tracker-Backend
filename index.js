@@ -10,6 +10,7 @@ app.use(express.json());
 
 app.post("/api/users", registerUser);
 app.post("/api/users/login", loginUser);
+app.post("/api/users/loginn", loginUser);
 
 app.listen(port, () => {
   console.log(`Server is running on PORT ${port}`);

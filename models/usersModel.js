@@ -23,6 +23,23 @@ const User = mongoose.model(
         default:
           "https://i.pinimg.com/originals/47/ba/71/47ba71f457434319819ac4a7cbd9988e.jpg",
       },
+      routines: [
+        {
+          name: {
+            type: String,
+            required: [true, "Please add a routine name "],
+          },
+          exercises: [
+            {
+              name: {
+                type: String,
+                required: [true, "Please add a exercise name"],
+              },
+              sets: { type: Number },
+            },
+          ],
+        },
+      ],
     },
     {
       timestamps: true,

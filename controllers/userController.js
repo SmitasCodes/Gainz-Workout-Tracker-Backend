@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/usersModel");
 
-//======================== REGISTER USER======================//
+//======================== REGISTER USER ========================//
 
 // @desc Register new user
 // @route POST /api/users
@@ -52,7 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-//======================== LOGIN USER ======================//
+//======================== LOGIN USER ========================//
 
 // @desc Login a user
 // @route POST /api/users/login
@@ -84,7 +84,13 @@ const generateToken = (id) => {
   });
 };
 
+// TESTAS
+const testas = asyncHandler(async (req, res) => {
+  console.log(req.body.routines);
+});
+
 module.exports = {
   registerUser,
   loginUser,
+  testas,
 };
