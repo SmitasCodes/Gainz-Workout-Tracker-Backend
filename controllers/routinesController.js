@@ -7,38 +7,38 @@ const User = require("../models/usersModel");
 // @access PRIVATE
 
 const addRoutine = asyncHandler(async (req, res) => {
-  console.log(req.body)
-  console.log(req.user.id)
-//   const { name } = req.body.routines;
+  const { name } = req.body.routines;
+  const { id } = req.user;
 
-//   if (!name) {
-//     res.status(400);
-//     throw new Error("Please enter all fields");
-//   }
+  if (!name) {
+    res.status(400);
+    throw new Error("Please enter all fields");
+  }
 
-//   const nameExist = await User.findOne({
-//     routines: { $elemMatch: { name } },
-//   });
+  const nameExist = await User.findOne({
+    _id: id,
+    routines: { $elemMatch: { name } },
+  });
 
-//   if (nameExist) {
-//     res.status(400);
-//     throw new Error("Routine with same name already exist");
-//   }
+  if (nameExist) {
+    res.status(400);
+    throw new Error("Routine with same name already exist");
+  }
 
-  //   const trying = await User.findOneAndUpdate(
-  //     { username: "salsa1" },
-  //     { $push: { routines: { name: name } } }
-  //     // { new: true }
-  //   );
+  const createRoutine = await User.findOneAndUpdate(
+    { _id: id },
+    { $push: { routines: { name: name } } }
+  );
 
-  //   if (trying) {
-  //     res.status(201).json({
-  //       _name: name,
-  //     });
-  //   } else {
-  //     res.status(400);
-  //     throw new Error("Invalid user data");
-  //   }
+  if (createRoutine) {
+    res.status(201).json({
+      created: "true",
+      _name: name,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Error");
+  }
 });
 
 module.exports = { addRoutine };
