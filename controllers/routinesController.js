@@ -27,7 +27,7 @@ const addRoutine = asyncHandler(async (req, res) => {
 
   const createRoutine = await User.findOneAndUpdate(
     { _id: id },
-    { $push: { routines: { name: name } } }
+    { $push: { routines: { name } } }
   );
 
   if (createRoutine) {
@@ -74,16 +74,31 @@ const addExercise = asyncHandler(async (req, res) => {
   const userID = req.user.id;
   const { name, sets = "" } = req.body;
 
-  console.log(userID, routineID, name, sets);
+  const nameExist = await User.findOne({
+    _id: userID,
+    routines: {
+      $elemMatch: {
+        _id: routineID,
+        exercises: { $elemMatch: { name } },
+      },
+    },
+  });
+
+  if (nameExist) {
+    res.status(400);
+    throw new Error("Exercise already exist");
+  }
 
   const createExercise = await User.findOneAndUpdate(
     { _id: userID, routines: { $elemMatch: { _id: routineID } } },
-    { $push: { "routines.$.exercises": { name: "Sss" } } }
+    { $push: { "routines.$.exercises": { name, sets } } }
   );
 
   if (createExercise) {
     res.status(201).json({
       message: `Exercise created for routine`,
+      _name: name,
+      _sets: sets,
     });
   } else {
     res.status(400);
