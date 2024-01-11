@@ -32,7 +32,7 @@ const addRoutine = asyncHandler(async (req, res) => {
 
   if (createRoutine) {
     res.status(201).json({
-      message: `Routine created for user: ${req.user.username}`,
+      message: `Routine created`,
       _name: name,
     });
   } else {
@@ -62,7 +62,9 @@ const deleteRoutine = asyncHandler(async (req, res) => {
     $pull: { routines: { _id: id } },
   });
 
-  if (deletedRoutine.nModified > 0) {
+  console.log(deletedRoutine.modifiedCount);
+
+  if (deletedRoutine.modifiedCount > 0) {
     res.status(201).json({
       message: "Routine deleted",
     });
@@ -104,13 +106,13 @@ const addExercise = asyncHandler(async (req, res) => {
 
   if (createExercise) {
     res.status(201).json({
-      message: `Exercise created for routine`,
+      message: `Exercise created`,
       _name: name,
       _sets: sets,
     });
   } else {
     res.status(400);
-    throw new Error("Error while trying to add exercise");
+    throw new Error("Error when trying to add exercise");
   }
 });
 
@@ -119,4 +121,39 @@ const addExercise = asyncHandler(async (req, res) => {
 // @route DELETE /api/:routineId/exercises/:exerciseId
 // @access PRIVATE
 
-module.exports = { addRoutine, deleteRoutine, addExercise };
+const deleteExercise = asyncHandler(async (req, res) => {
+  const routineId = req.params.routineId;
+  const exerciseId = req.params.exerciseId;
+  const userId = req.user.id;
+
+  const query = {
+    _id: userId,
+    routines: {
+      $elemMatch: {
+        _id: routineId,
+        exercises: { $elemMatch: { _id: exerciseId } },
+      },
+    },
+  };
+
+  const exerciseExist = await User.findOne(query);
+  if (!exerciseExist) {
+    res.status(404);
+    throw new Error("Error, exercise not found");
+  }
+
+  const deletedExercise = await User.updateOne(query, {
+    $pull: { "routines.$.exercises": { _id: exerciseId } },
+  });
+
+  if (deletedExercise.modifiedCount > 0) {
+    res.status(200).json({
+      message: "Exercise deleted",
+    });
+  } else {
+    res.status(400);
+    throw new Error("Error when trying to delete exercise");
+  }
+});
+
+module.exports = { addRoutine, deleteRoutine, addExercise, deleteExercise };
