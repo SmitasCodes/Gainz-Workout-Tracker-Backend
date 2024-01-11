@@ -35,7 +35,7 @@ const User = mongoose.model(
                 type: String,
                 required: [true, "Please add a exercise name"],
               },
-              sets: { type: Number },
+              // sets: { type: Number },
             },
           ],
         },

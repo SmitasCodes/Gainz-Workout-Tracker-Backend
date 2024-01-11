@@ -68,4 +68,27 @@ const deleteRoutine = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { addRoutine, deleteRoutine };
+//======================== ADD EXERCISE ========================//
+const addExercise = asyncHandler(async (req, res) => {
+  const routineID = req.params.id;
+  const userID = req.user.id;
+  const { name, sets = "" } = req.body;
+
+  console.log(userID, routineID, name, sets);
+
+  const createExercise = await User.findOneAndUpdate(
+    { _id: userID, routines: { $elemMatch: { _id: routineID } } },
+    { $push: { "routines.$.exercises": { name: "Sss" } } }
+  );
+
+  if (createExercise) {
+    res.status(201).json({
+      message: `Exercise created for routine`,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Error while trying to add exercise");
+  }
+});
+
+module.exports = { addRoutine, deleteRoutine, addExercise };

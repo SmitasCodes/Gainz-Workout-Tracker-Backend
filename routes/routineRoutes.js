@@ -4,9 +4,11 @@ const router = express.Router();
 const {
   addRoutine,
   deleteRoutine,
+  addExercise,
 } = require("../controllers/routinesController");
 
 router.post("/", protect, addRoutine);
 router.delete("/:id", protect, deleteRoutine);
+router.post("/:id/exercises", protect, addExercise);
 
 module.exports = router;
