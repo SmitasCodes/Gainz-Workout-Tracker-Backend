@@ -32,13 +32,40 @@ const addRoutine = asyncHandler(async (req, res) => {
 
   if (createRoutine) {
     res.status(201).json({
-      created: "true",
+      message: `Routine created for user: ${req.user.username}`,
       _name: name,
     });
   } else {
     res.status(400);
-    throw new Error("Error");
+    throw new Error("Error while trying to add routine");
   }
 });
 
-module.exports = { addRoutine };
+//======================== DELETE ROUTINE ========================//
+const deleteRoutine = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const userID = req.user.id;
+
+  const query = { _id: userID, routines: { $elemMatch: { _id: id } } };
+
+  const routineExist = await User.findOne(query);
+  if (!routineExist) {
+    res.status(404);
+    throw new Error("Error, routine not found");
+  }
+
+  const deletedRoutine = await User.updateOne(query, {
+    $pull: { routines: { _id: id } },
+  });
+
+  if (deletedRoutine.nModified > 0) {
+    res.status(201).json({
+      message: "Routine deleted",
+    });
+  } else {
+    res.status(400);
+    throw new Error("Error while trying to delete routine");
+  }
+});
+
+module.exports = { addRoutine, deleteRoutine };
