@@ -9,6 +9,7 @@ const {
 
 router.post("/", protect, addRoutine);
 router.delete("/:id", protect, deleteRoutine);
-router.post("/:id/exercises", protect, addExercise);
+router.post("/:routineId/exercises", protect, addExercise);
+router.delete("/:routineId/exercises/:exerciseId");
 
 module.exports = router;

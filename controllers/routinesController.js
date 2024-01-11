@@ -74,11 +74,11 @@ const deleteRoutine = asyncHandler(async (req, res) => {
 
 //======================== ADD EXERCISE ========================//
 // @desc Delete routine
-// @route DELETE /api/:id/exercises
+// @route DELETE /api/:routineId/exercises
 // @access PRIVATE
 
 const addExercise = asyncHandler(async (req, res) => {
-  const routineID = req.params.id;
+  const routineId = req.params.routineId;
   const userID = req.user.id;
   const { name, sets = "" } = req.body;
 
@@ -86,7 +86,7 @@ const addExercise = asyncHandler(async (req, res) => {
     _id: userID,
     routines: {
       $elemMatch: {
-        _id: routineID,
+        _id: routineId,
         exercises: { $elemMatch: { name } },
       },
     },
@@ -98,7 +98,7 @@ const addExercise = asyncHandler(async (req, res) => {
   }
 
   const createExercise = await User.findOneAndUpdate(
-    { _id: userID, routines: { $elemMatch: { _id: routineID } } },
+    { _id: userID, routines: { $elemMatch: { _id: routineId } } },
     { $push: { "routines.$.exercises": { name, sets } } }
   );
 
@@ -113,5 +113,10 @@ const addExercise = asyncHandler(async (req, res) => {
     throw new Error("Error while trying to add exercise");
   }
 });
+
+//======================== DELETE EXERCISE ========================//
+// @desc Delete exercise
+// @route DELETE /api/:routineId/exercises/:exerciseId
+// @access PRIVATE
 
 module.exports = { addRoutine, deleteRoutine, addExercise };
