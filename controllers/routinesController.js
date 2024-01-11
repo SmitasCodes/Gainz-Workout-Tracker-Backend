@@ -7,7 +7,7 @@ const User = require("../models/usersModel");
 // @access PRIVATE
 
 const addRoutine = asyncHandler(async (req, res) => {
-  const { name } = req.body.routines;
+  const { name } = req.body;
   const { id } = req.user;
 
   if (!name) {
@@ -42,6 +42,10 @@ const addRoutine = asyncHandler(async (req, res) => {
 });
 
 //======================== DELETE ROUTINE ========================//
+// @desc Delete routine
+// @route DELETE /api/routines/:id
+// @access PRIVATE
+
 const deleteRoutine = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const userID = req.user.id;
@@ -69,6 +73,10 @@ const deleteRoutine = asyncHandler(async (req, res) => {
 });
 
 //======================== ADD EXERCISE ========================//
+// @desc Delete routine
+// @route DELETE /api/:id/exercises
+// @access PRIVATE
+
 const addExercise = asyncHandler(async (req, res) => {
   const routineID = req.params.id;
   const userID = req.user.id;
